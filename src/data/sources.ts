@@ -1,4 +1,3 @@
-
 export interface Source {
   id: string;
   title: string;
@@ -205,6 +204,187 @@ export const sources: Source[] = [
     country: "États-Unis",
     tags: ["géopolitique", "renseignement", "sécurité", "prévisions", "analyse"],
     description: "Plateforme d'intelligence géopolitique"
+  },
+  // Nouvelles sources gouvernementales
+  {
+    id: "whitehouse",
+    title: "The White House",
+    url: "https://www.whitehouse.gov",
+    type: SourceType.GOVERNMENT,
+    country: "États-Unis",
+    tags: ["présidence", "politique américaine", "exécutif", "communiqués"],
+    description: "Site officiel de la Maison Blanche"
+  },
+  {
+    id: "state-gov",
+    title: "U.S. Department of State",
+    url: "https://www.state.gov",
+    type: SourceType.GOVERNMENT,
+    country: "États-Unis",
+    tags: ["diplomatie", "politique étrangère", "relations bilatérales", "sanctions"],
+    description: "Département d'État américain"
+  },
+  {
+    id: "defense-gov",
+    title: "U.S. Department of Defense",
+    url: "https://www.defense.gov",
+    type: SourceType.GOVERNMENT,
+    country: "États-Unis",
+    tags: ["défense", "militaire", "sécurité nationale", "opérations"],
+    description: "Ministère de la Défense américain"
+  },
+  {
+    id: "gov-uk",
+    title: "GOV.UK",
+    url: "https://www.gov.uk",
+    type: SourceType.GOVERNMENT,
+    country: "Royaume-Uni",
+    tags: ["gouvernement britannique", "politique", "services publics", "brexit"],
+    description: "Portail officiel du gouvernement britannique"
+  },
+  {
+    id: "fco-gov-uk",
+    title: "UK Foreign Office",
+    url: "https://www.gov.uk/government/organisations/foreign-commonwealth-development-office",
+    type: SourceType.GOVERNMENT,
+    country: "Royaume-Uni",
+    tags: ["diplomatie britannique", "commonwealth", "développement", "relations internationales"],
+    description: "Foreign, Commonwealth & Development Office"
+  },
+  {
+    id: "bundeskanzleramt",
+    title: "Bundeskanzleramt",
+    url: "https://www.bundeskanzleramt.de",
+    type: SourceType.GOVERNMENT,
+    country: "Allemagne",
+    tags: ["chancellerie", "politique allemande", "union européenne", "gouvernement"],
+    description: "Chancellerie fédérale allemande"
+  },
+  {
+    id: "auswaertiges-amt",
+    title: "Auswärtiges Amt",
+    url: "https://www.auswaertiges-amt.de",
+    type: SourceType.GOVERNMENT,
+    country: "Allemagne",
+    tags: ["diplomatie allemande", "politique étrangère", "coopération", "culture"],
+    description: "Ministère des Affaires étrangères allemand"
+  },
+  {
+    id: "consilium-europa",
+    title: "Conseil européen",
+    url: "https://www.consilium.europa.eu",
+    type: SourceType.GOVERNMENT,
+    country: "Union Européenne",
+    tags: ["institutions européennes", "conseil", "décisions", "sommets"],
+    description: "Conseil européen et Conseil de l'UE"
+  },
+  {
+    id: "commission-europa",
+    title: "Commission européenne",
+    url: "https://ec.europa.eu",
+    type: SourceType.GOVERNMENT,
+    country: "Union Européenne",
+    tags: ["commission européenne", "législation", "politiques", "initiatives"],
+    description: "Commission européenne"
+  },
+  {
+    id: "nato",
+    title: "NATO",
+    url: "https://www.nato.int",
+    type: SourceType.GOVERNMENT,
+    country: "International",
+    tags: ["otan", "sécurité collective", "défense", "alliance"],
+    description: "Organisation du traité de l'Atlantique nord"
+  },
+  {
+    id: "un-org",
+    title: "Nations Unies",
+    url: "https://www.un.org",
+    type: SourceType.GOVERNMENT,
+    country: "International",
+    tags: ["onu", "multilatéralisme", "paix", "développement", "droits humains"],
+    description: "Organisation des Nations Unies"
+  },
+  {
+    id: "kremlin",
+    title: "Kremlin",
+    url: "http://en.kremlin.ru",
+    type: SourceType.GOVERNMENT,
+    country: "Russie",
+    tags: ["présidence russe", "politique russe", "eurasie", "sécurité"],
+    description: "Site officiel du Président de la Fédération de Russie"
+  },
+  {
+    id: "mid-russia",
+    title: "MID Russia",
+    url: "https://mid.ru/en",
+    type: SourceType.GOVERNMENT,
+    country: "Russie",
+    tags: ["diplomatie russe", "politique étrangère", "multipolaire", "coopération"],
+    description: "Ministère des Affaires étrangères de Russie"
+  },
+  {
+    id: "gov-cn",
+    title: "Gov.cn",
+    url: "http://english.gov.cn",
+    type: SourceType.GOVERNMENT,
+    country: "Chine",
+    tags: ["gouvernement chinois", "politique", "développement", "réformes"],
+    description: "Portail du gouvernement populaire central de Chine"
+  },
+  {
+    id: "fmprc-gov-cn",
+    title: "FMPRC",
+    url: "https://www.fmprc.gov.cn/eng",
+    type: SourceType.GOVERNMENT,
+    country: "Chine",
+    tags: ["diplomatie chinoise", "relations bilatérales", "coopération", "belt and road"],
+    description: "Ministère des Affaires étrangères de Chine"
+  },
+  {
+    id: "canada-ca",
+    title: "Gouvernement du Canada",
+    url: "https://www.canada.ca",
+    type: SourceType.GOVERNMENT,
+    country: "Canada",
+    tags: ["gouvernement canadien", "politique", "services", "multilinguisme"],
+    description: "Portail officiel du gouvernement canadien"
+  },
+  {
+    id: "international-gc-ca",
+    title: "Affaires mondiales Canada",
+    url: "https://www.international.gc.ca",
+    type: SourceType.GOVERNMENT,
+    country: "Canada",
+    tags: ["diplomatie canadienne", "commerce", "développement", "paix"],
+    description: "Affaires mondiales Canada"
+  },
+  {
+    id: "mofa-japan",
+    title: "MOFA Japan",
+    url: "https://www.mofa.go.jp",
+    type: SourceType.GOVERNMENT,
+    country: "Japon",
+    tags: ["diplomatie japonaise", "indo-pacifique", "sécurité", "coopération"],
+    description: "Ministère des Affaires étrangères du Japon"
+  },
+  {
+    id: "mea-india",
+    title: "MEA India",
+    url: "https://www.mea.gov.in",
+    type: SourceType.GOVERNMENT,
+    country: "Inde",
+    tags: ["diplomatie indienne", "relations extérieures", "non-alignement", "développement"],
+    description: "Ministère des Affaires extérieures de l'Inde"
+  },
+  {
+    id: "itamaraty",
+    title: "Itamaraty",
+    url: "https://www.gov.br/mre",
+    type: SourceType.GOVERNMENT,
+    country: "Brésil",
+    tags: ["diplomatie brésilienne", "amérique latine", "coopération sud-sud", "environnement"],
+    description: "Ministère des Relations extérieures du Brésil"
   }
 ];
 
