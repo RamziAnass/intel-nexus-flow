@@ -1,34 +1,22 @@
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
-const ThemeToggle = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
+const ThemeToggle: React.FC = () => {
+  const { theme, setTheme } = useTheme();
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
-      onClick={() => setIsDarkMode(!isDarkMode)}
-      className="bg-card border-border w-24 font-mono text-xs"
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      className="w-9 h-9 p-0"
     >
-      {isDarkMode ? 'MODE JOUR' : 'MODE NUIT'}
+      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 };

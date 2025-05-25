@@ -1,31 +1,27 @@
 
 import React from 'react';
-import { SourceType } from '../data/sources';
-
-const typeToColor: Record<SourceType, string> = {
-  [SourceType.PRESS]: '#3b82f6',
-  [SourceType.THINK_TANK]: '#8b5cf6',
-  [SourceType.BLOG]: '#ec4899',
-  [SourceType.GOVERNMENT]: '#10b981',
-  [SourceType.ACADEMIC]: '#f59e0b',
-  [SourceType.NGO]: '#6366f1',
-  [SourceType.SPECIALIZED]: '#ef4444',
-};
 
 const Legend: React.FC = () => {
   return (
-    <div className="flex flex-wrap gap-4 justify-center items-center p-4">
-      {Object.entries(typeToColor).map(([type, color]) => (
-        <div key={type} className="flex items-center">
-          <div 
-            className="w-3 h-3 rounded-full mr-2" 
-            style={{ backgroundColor: color }}
-          />
-          <span className="text-xs font-mono">{type}</span>
+    <div className="bg-muted/40 p-4 border-t">
+      <h3 className="font-semibold font-mono mb-3 text-sm">Légende</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+          <span className="font-mono">Gouvernement</span>
         </div>
-      ))}
-      <div className="text-xs font-mono text-muted-foreground ml-4">
-        <span className="italic">Cliquez sur un nœud pour ouvrir la source</span>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          <span className="font-mono">Médias</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+          <span className="font-mono">Intelligence</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+          <span className="font-mono">Académique</span>
+        </div>
       </div>
     </div>
   );

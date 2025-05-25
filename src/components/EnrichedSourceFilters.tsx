@@ -1,12 +1,14 @@
 
 import React from 'react';
-import { SourceType, Region } from '../data/enrichedSources';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X, Star } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Search, X } from 'lucide-react';
+import { SourceType, Region } from '../data/enrichedSources';
 
 interface EnrichedSourceFiltersProps {
   searchTerm: string;
-  onSearchChange: (value: string) => void;
+  onSearchChange: (term: string) => void;
   selectedTypes: SourceType[];
   onTypesChange: (types: SourceType[]) => void;
   selectedCountries: string[];
@@ -35,14 +37,12 @@ const EnrichedSourceFilters: React.FC<EnrichedSourceFiltersProps> = ({
   onRegionsChange,
   selectedTags,
   onTagsChange,
-  selectedReliability,
-  onReliabilityChange,
-  selectedAccessLevel,
-  onAccessLevelChange,
   countries,
   regions,
   tags
 }) => {
+  const sourceTypes: SourceType[] = ['government', 'media', 'academic', 'intelligence', 'ngo', 'corporate', 'social'];
+
   const toggleType = (type: SourceType) => {
     if (selectedTypes.includes(type)) {
       onTypesChange(selectedTypes.filter(t => t !== type));
@@ -75,189 +75,145 @@ const EnrichedSourceFilters: React.FC<EnrichedSourceFiltersProps> = ({
     }
   };
 
-  const toggleReliability = (rating: number) => {
-    if (selectedReliability.includes(rating)) {
-      onReliabilityChange(selectedReliability.filter(r => r !== rating));
-    } else {
-      onReliabilityChange([...selectedReliability, rating]);
-    }
-  };
-
-  const toggleAccessLevel = (level: string) => {
-    if (selectedAccessLevel.includes(level)) {
-      onAccessLevelChange(selectedAccessLevel.filter(a => a !== level));
-    } else {
-      onAccessLevelChange([...selectedAccessLevel, level]);
-    }
-  };
-
   const clearAllFilters = () => {
     onSearchChange('');
     onTypesChange([]);
     onCountriesChange([]);
     onRegionsChange([]);
     onTagsChange([]);
-    onReliabilityChange([]);
-    onAccessLevelChange([]);
   };
 
-  const hasActiveFilters = searchTerm || selectedTypes.length > 0 || selectedCountries.length > 0 || 
-                          selectedRegions.length > 0 || selectedTags.length > 0 || 
-                          selectedReliability.length > 0 || selectedAccessLevel.length > 0;
-
   return (
-    <div className="bg-card border border-border rounded-lg p-6 mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold font-mono">Filtres de recherche avancés</h2>
-        {hasActiveFilters && (
-          <Button variant="outline" size="sm" onClick={clearAllFilters}>
-            <X className="w-4 h-4 mr-2" />
-            Effacer tout
-          </Button>
-        )}
+    <div className="space-y-6 mb-8">
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Rechercher par titre, description, tags ou pays..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="pl-10 font-mono"
+        />
       </div>
 
-      <div className="space-y-6">
-        {/* Search */}
+      {/* Active filters summary */}
+      {(selectedTypes.length > 0 || selectedCountries.length > 0 || selectedRegions.length > 0 || selectedTags.length > 0) && (
+        <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-2">
+            {selectedTypes.map(type => (
+              <Badge key={type} variant="secondary" className="font-mono">
+                {type}
+                <X 
+                  className="w-3 h-3 ml-1 cursor-pointer" 
+                  onClick={() => toggleType(type)}
+                />
+              </Badge>
+            ))}
+            {selectedCountries.map(country => (
+              <Badge key={country} variant="secondary" className="font-mono">
+                {country}
+                <X 
+                  className="w-3 h-3 ml-1 cursor-pointer" 
+                  onClick={() => toggleCountry(country)}
+                />
+              </Badge>
+            ))}
+            {selectedRegions.map(region => (
+              <Badge key={region} variant="secondary" className="font-mono">
+                {region}
+                <X 
+                  className="w-3 h-3 ml-1 cursor-pointer" 
+                  onClick={() => toggleRegion(region)}
+                />
+              </Badge>
+            ))}
+            {selectedTags.map(tag => (
+              <Badge key={tag} variant="secondary" className="font-mono">
+                {tag}
+                <X 
+                  className="w-3 h-3 ml-1 cursor-pointer" 
+                  onClick={() => toggleTag(tag)}
+                />
+              </Badge>
+            ))}
+          </div>
+          <Button variant="ghost" size="sm" onClick={clearAllFilters}>
+            Effacer tout
+          </Button>
+        </div>
+      )}
+
+      {/* Filter sections */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Types */}
         <div>
-          <label className="block text-sm font-medium mb-2">Recherche globale</label>
-          <input
-            type="text"
-            placeholder="Rechercher par nom, description, tag ou pays..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-md bg-background font-mono"
-          />
+          <h3 className="font-semibold font-mono mb-2 text-sm">Types</h3>
+          <div className="flex flex-wrap gap-2">
+            {sourceTypes.map(type => (
+              <Button
+                key={type}
+                variant={selectedTypes.includes(type) ? "default" : "outline"}
+                size="sm"
+                onClick={() => toggleType(type)}
+                className="text-xs font-mono"
+              >
+                {type}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* Regions */}
         <div>
-          <label className="block text-sm font-medium mb-2">Régions ({selectedRegions.length})</label>
+          <h3 className="font-semibold font-mono mb-2 text-sm">Régions</h3>
           <div className="flex flex-wrap gap-2">
-            {regions.map(region => (
-              <button
+            {regions.slice(0, 4).map(region => (
+              <Button
                 key={region}
+                variant={selectedRegions.includes(region) ? "default" : "outline"}
+                size="sm"
                 onClick={() => toggleRegion(region)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  selectedRegions.includes(region)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
+                className="text-xs font-mono"
               >
                 {region}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
-        {/* Types */}
+        {/* Countries */}
         <div>
-          <label className="block text-sm font-medium mb-2">Types de sources ({selectedTypes.length})</label>
+          <h3 className="font-semibold font-mono mb-2 text-sm">Pays</h3>
           <div className="flex flex-wrap gap-2">
-            {Object.values(SourceType).map(type => (
-              <button
-                key={type}
-                onClick={() => toggleType(type)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  selectedTypes.includes(type)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                {type.replace('_', ' ')}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Reliability */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Fiabilité ({selectedReliability.length})</label>
-          <div className="flex flex-wrap gap-2">
-            {[1, 2, 3, 4, 5].map(rating => (
-              <button
-                key={rating}
-                onClick={() => toggleReliability(rating)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors flex items-center ${
-                  selectedReliability.includes(rating)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                <Star className="w-3 h-3 mr-1" />
-                {rating}+
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Access Level */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Niveau d'accès ({selectedAccessLevel.length})</label>
-          <div className="flex flex-wrap gap-2">
-            {['public', 'restricted', 'classified'].map(level => (
-              <button
-                key={level}
-                onClick={() => toggleAccessLevel(level)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  selectedAccessLevel.includes(level)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                {level === 'public' ? 'Public' : level === 'restricted' ? 'Restreint' : 'Classifié'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Countries - Limited display */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Pays ({selectedCountries.length})</label>
-          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-            {countries.slice(0, 30).map(country => (
-              <button
+            {countries.slice(0, 4).map(country => (
+              <Button
                 key={country}
+                variant={selectedCountries.includes(country) ? "default" : "outline"}
+                size="sm"
                 onClick={() => toggleCountry(country)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  selectedCountries.includes(country)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
+                className="text-xs font-mono"
               >
                 {country}
-              </button>
+              </Button>
             ))}
-            {countries.length > 30 && (
-              <span className="px-3 py-1 text-xs text-muted-foreground">
-                +{countries.length - 30} autres...
-              </span>
-            )}
           </div>
         </div>
 
-        {/* Popular Tags */}
+        {/* Tags */}
         <div>
-          <label className="block text-sm font-medium mb-2">Tags populaires ({selectedTags.length})</label>
-          <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-            {tags.slice(0, 25).map(tag => (
-              <button
+          <h3 className="font-semibold font-mono mb-2 text-sm">Tags</h3>
+          <div className="flex flex-wrap gap-2">
+            {tags.slice(0, 4).map(tag => (
+              <Button
                 key={tag}
+                variant={selectedTags.includes(tag) ? "default" : "outline"}
+                size="sm"
                 onClick={() => toggleTag(tag)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  selectedTags.includes(tag)
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
+                className="text-xs font-mono"
               >
                 {tag}
-              </button>
+              </Button>
             ))}
-            {tags.length > 25 && (
-              <span className="px-3 py-1 text-xs text-muted-foreground">
-                +{tags.length - 25} autres...
-              </span>
-            )}
           </div>
         </div>
       </div>
