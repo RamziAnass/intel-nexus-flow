@@ -1,35 +1,39 @@
 
 import { useState, useMemo } from 'react';
-import { sources, SourceType, getAllTags } from '../data/sources';
+import { enrichedSources, SourceType, Region, getAllTags, getAllCountries, getAllRegions } from '../data/enrichedSources';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import SourceCard from '../components/SourceCard';
-import SourceFilters from '../components/SourceFilters';
+import EnrichedSourceCard from '../components/EnrichedSourceCard';
+import EnrichedSourceFilters from '../components/EnrichedSourceFilters';
 
 const Sources = () => {
   const [selectedTypes, setSelectedTypes] = useState<SourceType[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<Region[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const countries = useMemo(() => {
-    const countrySet = new Set(sources.map(source => source.country));
-    return Array.from(countrySet).sort();
-  }, []);
+  const [selectedReliability, setSelectedReliability] = useState<number[]>([]);
+  const [selectedAccessLevel, setSelectedAccessLevel] = useState<string[]>([]);
 
   const filteredSources = useMemo(() => {
-    return sources.filter(source => {
+    return enrichedSources.filter(source => {
       const matchesType = selectedTypes.length === 0 || selectedTypes.includes(source.type);
       const matchesCountry = selectedCountries.length === 0 || selectedCountries.includes(source.country);
+      const matchesRegion = selectedRegions.length === 0 || selectedRegions.includes(source.region);
       const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => source.tags.includes(tag));
+      const matchesReliability = selectedReliability.length === 0 || selectedReliability.includes(source.reliability);
+      const matchesAccessLevel = selectedAccessLevel.length === 0 || selectedAccessLevel.includes(source.accessLevel);
       const matchesSearch = searchTerm === '' || 
         source.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         source.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        source.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+        source.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        source.country.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesType && matchesCountry && matchesTags && matchesSearch;
+      return matchesType && matchesCountry && matchesRegion && matchesTags && 
+             matchesReliability && matchesAccessLevel && matchesSearch;
     });
-  }, [selectedTypes, selectedCountries, selectedTags, searchTerm]);
+  }, [selectedTypes, selectedCountries, selectedRegions, selectedTags, 
+      selectedReliability, selectedAccessLevel, searchTerm]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -42,20 +46,27 @@ const Sources = () => {
               Explorer les <span className="text-primary">sources</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Découvrez notre base de données de {sources.length} sources d'information stratégique
+              Découvrez notre base de données enrichie de {enrichedSources.length} sources d'information stratégique
             </p>
           </div>
 
-          <SourceFilters
+          <EnrichedSourceFilters
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             selectedTypes={selectedTypes}
             onTypesChange={setSelectedTypes}
             selectedCountries={selectedCountries}
             onCountriesChange={setSelectedCountries}
+            selectedRegions={selectedRegions}
+            onRegionsChange={setSelectedRegions}
             selectedTags={selectedTags}
             onTagsChange={setSelectedTags}
-            countries={countries}
+            selectedReliability={selectedReliability}
+            onReliabilityChange={setSelectedReliability}
+            selectedAccessLevel={selectedAccessLevel}
+            onAccessLevelChange={setSelectedAccessLevel}
+            countries={getAllCountries()}
+            regions={getAllRegions()}
             tags={getAllTags()}
           />
 
@@ -67,7 +78,7 @@ const Sources = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSources.map(source => (
-              <SourceCard key={source.id} source={source} />
+              <EnrichedSourceCard key={source.id} source={source} />
             ))}
           </div>
 

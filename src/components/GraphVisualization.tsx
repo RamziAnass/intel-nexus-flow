@@ -1,7 +1,7 @@
-
 import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { Source, SourceType } from '../data/sources';
+import { SourceType as EnrichedSourceType } from '../data/enrichedSources';
 import { toast } from '@/components/ui/use-toast';
 
 interface GraphVisualizationProps {
@@ -12,7 +12,7 @@ type Node = d3.SimulationNodeDatum & {
   id: string;
   title: string;
   url: string;
-  type: SourceType;
+  type: SourceType | EnrichedSourceType;
   country: string;
   group: string;
   radius: number;
@@ -29,14 +29,22 @@ interface Graph {
   links: Link[];
 }
 
-const typeToColor: Record<SourceType, string> = {
-  [SourceType.PRESS]: '#3b82f6', // blue
-  [SourceType.THINK_TANK]: '#8b5cf6', // purple 
-  [SourceType.BLOG]: '#ec4899', // pink
-  [SourceType.GOVERNMENT]: '#10b981', // green
-  [SourceType.ACADEMIC]: '#f59e0b', // amber
-  [SourceType.NGO]: '#6366f1', // indigo
-  [SourceType.SPECIALIZED]: '#ef4444', // red
+const typeToColor: Record<string, string> = {
+  [SourceType.PRESS]: '#3b82f6',
+  [SourceType.THINK_TANK]: '#8b5cf6',
+  [SourceType.BLOG]: '#ec4899',
+  [SourceType.GOVERNMENT]: '#10b981',
+  [SourceType.ACADEMIC]: '#f59e0b',
+  [SourceType.NGO]: '#6366f1',
+  [SourceType.SPECIALIZED]: '#ef4444',
+  // New enriched source types
+  'INTELLIGENCE': '#10b981',
+  'MILITARY': '#64748b',
+  'ECONOMIC': '#fb923c',
+  'DIPLOMATIC': '#14b8a6',
+  'CYBER': '#8b5cf6',
+  'SOCIAL_MEDIA': '#f43f5e',
+  'RESEARCH_INSTITUTE': '#06b6d4',
 };
 
 const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
@@ -83,7 +91,7 @@ const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
         url: source.url,
         type: source.type,
         country: source.country,
-        group: source.type,
+        group: source.type.toString(),
         radius: 12
       });
     });
@@ -133,20 +141,20 @@ const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
 
     // Create a forceSimulation
     const simulation = d3.forceSimulation(graph.nodes)
-      .force('link', d3.forceLink(graph.links).id((d: any) => d.id).distance(60))
-      .force('charge', d3.forceManyBody().strength(-200))
+      .force('link', d3.forceLink(graph.links).id((d: any) => d.id).distance(80))
+      .force('charge', d3.forceManyBody().strength(-300))
       .force('center', d3.forceCenter(0, 0))
-      .force('collision', d3.forceCollide().radius((d: any) => d.radius + 10));
+      .force('collision', d3.forceCollide().radius((d: any) => d.radius + 15));
 
     // Create links
     const link = container
       .append('g')
       .attr('stroke', '#999')
-      .attr('stroke-opacity', 0.6)
+      .attr('stroke-opacity', 0.4)
       .selectAll('line')
       .data(graph.links)
       .join('line')
-      .attr('stroke-width', 1)
+      .attr('stroke-width', 1.5)
       .attr('class', 'link');
 
     // Create nodes
@@ -171,9 +179,9 @@ const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
           .style('top', `${event.pageY + 10}px`)
           .html(`
             <div class="font-bold mb-1 text-sm">${d.title}</div>
-            <div class="text-muted-foreground">${d.type}</div>
-            <div class="text-muted-foreground">${d.country}</div>
-            <div class="mt-2 text-nexus-cyan">${d.url.replace('https://', '')}</div>
+            <div class="text-muted-foreground text-xs">${d.type.replace('_', ' ')}</div>
+            <div class="text-muted-foreground text-xs">${d.country}</div>
+            <div class="mt-2 text-emerald-400 text-xs">${d.url.replace('https://', '')}</div>
           `);
       })
       .on('mouseout', () => {
@@ -199,25 +207,27 @@ const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
     // Add circles to nodes
     node.append('circle')
       .attr('r', (d: any) => d.radius)
-      .attr('fill', (d: any) => typeToColor[d.type] || '#999')
+      .attr('fill', (d: any) => typeToColor[d.type.toString()] || '#999')
       .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5);
+      .attr('stroke-width', 2)
+      .attr('class', 'transition-all duration-200 hover:stroke-emerald-400');
 
     // Add labels to nodes
     node.append('text')
       .attr('class', 'node-label')
-      .attr('dx', 15)
+      .attr('dx', 18)
       .attr('dy', 4)
-      .text((d: any) => d.title)
+      .text((d: any) => d.title.length > 20 ? d.title.substring(0, 20) + '...' : d.title)
       .attr('fill', 'currentColor')
-      .attr('stroke', 'none');
+      .attr('stroke', 'none')
+      .style('font-size', '10px');
 
     // Add type indicator
     node.append('text')
       .attr('class', 'node-type')
       .attr('text-anchor', 'middle')
       .attr('dy', 4)
-      .text((d: any) => d.type.charAt(0))
+      .text((d: any) => d.type.toString().charAt(0))
       .attr('fill', '#fff')
       .attr('font-size', '10px')
       .attr('font-weight', 'bold')
@@ -242,7 +252,7 @@ const GraphVisualization = ({ sources }: GraphVisualizationProps) => {
 
   return (
     <div className="w-full" ref={containerRef}>
-      <svg ref={svgRef} className="w-full" />
+      <svg ref={svgRef} className="w-full border rounded-lg bg-muted/20" />
       <div ref={tooltipRef} className="node-tooltip"></div>
     </div>
   );
