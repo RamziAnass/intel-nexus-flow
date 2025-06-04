@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import GraphVisualization from '../components/GraphVisualization';
 import Legend from '../components/Legend';
