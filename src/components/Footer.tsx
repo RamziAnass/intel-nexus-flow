@@ -3,15 +3,15 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="py-8 px-4 border-t border-border bg-muted/20">
-      <div className="container max-w-6xl mx-auto">
-        <div className="text-center">
-          <p className="text-sm font-mono text-muted-foreground">
-            © 2024 ERA Sourcing - Enhanced Research & Analysis Platform
-          </p>
-          <p className="text-xs font-mono text-muted-foreground mt-2">
-            Intelligence stratégique et veille géopolitique
-          </p>
+    <footer className="w-full p-4 border-t border-border mt-auto">
+      <div className="container flex flex-col sm:flex-row justify-between items-center">
+        <div className="text-xs text-muted-foreground mb-2 sm:mb-0">
+          <span className="font-mono">NexusWatch</span> © {new Date().getFullYear()}
+        </div>
+        <div className="flex space-x-4 text-xs text-muted-foreground">
+          <a href="#" className="hover:text-foreground transition-colors">À propos</a>
+          <a href="#" className="hover:text-foreground transition-colors">Confidentialité</a>
+          <a href="#" className="hover:text-foreground transition-colors">Contact</a>
         </div>
       </div>
     </footer>

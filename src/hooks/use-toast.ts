@@ -1,25 +1,18 @@
-
 import * as React from "react"
 
-type ToasterToast = {
-  id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: React.ReactElement
-  variant?: "default" | "destructive"
-}
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
-type ToastActionElement = React.ReactElement
-
-type Toast = {
+type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
-  variant?: "default" | "destructive"
 }
 
 const actionTypes = {
@@ -32,7 +25,7 @@ const actionTypes = {
 let count = 0
 
 function genId() {
-  count = (count + 1) % Number.MAX_VALUE
+  count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
 
@@ -49,11 +42,11 @@ type Action =
     }
   | {
       type: ActionType["DISMISS_TOAST"]
-      toastId?: Toast["id"]
+      toastId?: ToasterToast["id"]
     }
   | {
       type: ActionType["REMOVE_TOAST"]
-      toastId?: Toast["id"]
+      toastId?: ToasterToast["id"]
     }
 
 interface State {
@@ -97,6 +90,8 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
+      // ! Side effects ! - This could be extracted into a dismissToast() action,
+      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -142,9 +137,9 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast2 = Omit<ToasterToast, "id">
+type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast2) {
+function toast({ ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
