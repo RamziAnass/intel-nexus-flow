@@ -1,26 +1,44 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import IntroAnimation from '../components/IntroAnimation';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    // Masquer l'animation après 3 secondes et rediriger
+    // Redirect authenticated users to sources page
+    if (user && !loading) {
+      navigate('/sources');
+      return;
+    }
+
+    // Masquer l'animation après 3 secondes
     const timer = setTimeout(() => {
       setShowIntro(false);
-      // Rediriger automatiquement vers la page des sources après l'animation
-      setTimeout(() => {
-        navigate('/sources');
-      }, 500);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, user, loading]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
+            <span className="text-primary-foreground font-bold text-xl">N</span>
+          </div>
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -39,13 +57,26 @@ const Index = () => {
                 Découvrir et analyser les sources d'information stratégiques.
               </p>
               
-              <div className="animate-fade-in">
-                <button
-                  onClick={() => navigate('/sources')}
-                  className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-mono font-semibold hover:bg-primary/90 transition-colors"
-                >
-                  Explorer les sources
-                </button>
+              <div className="animate-fade-in space-y-4">
+                <div className="space-x-4">
+                  <Button
+                    onClick={() => navigate('/auth')}
+                    className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-mono font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    Se connecter
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/auth')}
+                    className="px-8 py-4 rounded-lg font-mono font-semibold transition-colors"
+                  >
+                    S'inscrire
+                  </Button>
+                </div>
+                
+                <p className="text-sm text-muted-foreground">
+                  Connectez-vous pour explorer les sources d'information
+                </p>
               </div>
             </div>
           </main>
